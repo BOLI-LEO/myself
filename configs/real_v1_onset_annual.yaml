@@ -1,0 +1,71 @@
+experiment:
+  name: "REAL-V1-OnsetAnnual"
+
+paths:
+  # Local data root; not committed to Git.
+  data_root: "D:/LIU2019_FOREST_MORTALITY"
+  output_root: "D:/LIU2019_FOREST_MORTALITY/10_real_v1_onset_annual"
+
+  # Candidate annual feature table.
+  # Required columns are flexible but recommended schema is:
+  # node_id, year, ndvi, ndmi, nbr, precip, temp, vpd, x, y
+  annual_feature_csv: "D:/LIU2019_FOREST_MORTALITY/07_processed_features/annual_node_features.csv"
+
+  # Optional event table. Recommended columns:
+  # node_id, onset_year OR node_id, year, event
+  event_csv: "D:/LIU2019_FOREST_MORTALITY/07_processed_features/onset_events.csv"
+
+  # Optional edge table. Recommended columns:
+  # src, dst, weight
+  edge_csv: "D:/LIU2019_FOREST_MORTALITY/06_grid_graph/real_grid_edges.csv"
+
+time:
+  start_year: 1999
+  end_year: 2015
+  sample_start_year: 2005
+  sample_end_year: 2014
+  warmup_years: 5
+  horizons: [1, 2, 3]
+
+node:
+  node_col: "node_id"
+  year_col: "year"
+  expected_nodes_min: 800
+  expected_nodes_max: 1500
+
+features:
+  raw_features:
+    - ndvi
+    - ndmi
+    - nbr
+    - precip
+    - temp
+    - vpd
+  ews_features:
+    - ac1
+    - sd
+    - cv
+    - trend
+    - local_moran
+    - local_geary
+    - dnb_like
+  window_length: 5
+
+labels:
+  type: "onset"
+  primary_horizon: 2
+  exclude_after_onset: true
+  exclude_event_year: true
+  positive_rate_min: 0.01
+  positive_rate_max: 0.15
+  positive_rate_warn: 0.30
+
+graph:
+  patch_size: 40
+  patch_method: "bfs"      # bfs | spatial_block
+  max_patches_per_year: 500
+  random_seed: 123
+
+evaluation:
+  topk: [3, 5, 10, 20, 50]
+  random_repeats: 500

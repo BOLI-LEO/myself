@@ -1,0 +1,31 @@
+model:
+  name: "DNB_Reverse_GNN_node_only"
+  source_lineage:
+    core: "v6n2.5.2_crossseed_A"
+    full_pipeline_reference: "v6n2.5.4_attribution_full_pipeline"
+    archived_not_used: "v257_FIXED_ZERO_SHOT_shortpath"
+
+  # Checkpoint is intentionally not committed to Git.
+  checkpoint_path: "D:/DNB_REAL_V1_LOCAL/checkpoints/frozen_dnb_reverse.pt"
+
+input_schema:
+  num_nodes_per_patch: 40
+  window_length: 5
+  feature_names:
+    - ndvi
+    - ndmi
+    - nbr
+    - precip
+    - temp
+    - vpd
+    - ac1
+    - sd
+    - cv
+    - trend
+    - local_moran
+    - local_geary
+    - dnb_like
+
+inference:
+  aggregation_for_duplicate_nodes: "mean"  # mean | max | median
+  fallback_score: "dnb_like"               # used if real checkpoint is unavailable
